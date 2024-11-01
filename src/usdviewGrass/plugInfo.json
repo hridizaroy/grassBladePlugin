@@ -1,0 +1,16 @@
+{
+    "Plugins": [
+        {
+            "Type": "python",
+            "Name": "grassbladeplugin.UsdviewGrass",
+            "Info": {
+                "Types": {
+                    "grassbladeplugin.UsdviewGrass.UsdviewGrassPluginContainer": {
+                        "bases": ["pxr.Usdviewq.plugin.PluginContainer"],
+                        "displayName": "Usdview Grass Blade Plugin"
+                    }
+                }
+            }
+        }
+    ]
+}

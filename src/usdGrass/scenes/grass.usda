@@ -1,0 +1,9 @@
+#usda 1.0
+(
+    defaultPrim = "grass"
+)
+
+def Grass "mygrass"
+{
+    double radius = 1.5
+}

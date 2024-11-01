@@ -1,0 +1,13 @@
+# A common directory to host intermediate build files.
+build/
+
+# Backup files. 
+.bak
+
+# C++ object files.
+*.o
+
+# Python cache files.
+*.pyc
+
+README.md

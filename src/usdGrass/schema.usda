@@ -1,0 +1,57 @@
+#usda 1.0
+(
+    subLayers = [
+        @usd/schema.usda@,
+        @usdGeom/schema.usda@
+    ]
+) 
+
+over "GLOBAL" (
+    customData = {
+        string libraryName       = "usdGrass"
+        string libraryPath       = "."
+        string libraryPrefix     = "UsdGrass"
+    }
+) { 
+} 
+
+
+class Grass "Grass" (
+    doc = """A grass blade implemented as a curved cone-like structure."""
+    inherits = </Gprim>
+    
+    customData = {
+        dictionary extraPlugInfo = {
+            bool implementsComputeExtent = true
+        }
+    }
+)  {
+    double radius = 0.2 (
+        doc = """Radius of the bottom of the grass blade."""
+    )
+
+    double height = 1.0 (
+        doc = """Height of the grass blade."""
+    )
+    
+    double width = 0.5 (
+        doc = """Width of the grass blade (Past the diameter)."""
+    )
+
+    double heightPos = 0.5 (
+        doc = """x position where grass blade reaches its max height.
+                Goes from 0.0 to 1.0.
+                0.0 = Halfway through the width.
+                1.0 = At the width."""
+    )
+
+    color3f color = (0.1, 0.7, 0.1) (
+        displayName = "Color"
+        doc = """Color of the grass blade."""
+    )
+
+    float3[] extent = [(-0.2, 0.0, -0.2), (0.7, 1.0, 0.2)] (
+        doc = """Fallback extent value of a grass blade with
+                height = 1, width = 0.5, and radius = 0.2."""
+    )
+}
