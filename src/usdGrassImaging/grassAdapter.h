@@ -69,7 +69,7 @@ private:
     const int BASE_NUM_DIV = 100;
 
     // Number of circular planes to use for a curve of length 1.0
-    const int NUM_CIRC_PLANES = 100;
+    const int NUM_CIRC_PLANES = 300;
 
     GfVec3f GetRotatedPointsAboutZ(GfVec3f& point, double angle) const;
 

@@ -5,7 +5,7 @@
 
 def Grass "mygrass"
 {
-    double radius = 0.2
+    double radius = 0.5
     double horizontalStretch = 2.0
     double thinning = 0.95
     double heightPos = 0.3

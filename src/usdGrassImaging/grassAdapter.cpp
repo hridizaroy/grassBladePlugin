@@ -330,7 +330,6 @@ UsdGrassImagingGrassAdapter::GetTopology(const UsdPrim& usdPrim,
     for (int idx = 1; idx <= numDivisions; idx++)
     {
         faceVertexIndices.push_back(top_base_idx);
-        faceVertexIndices.push_back(top_base_idx + idx);
         
         // last face
         if (idx == numDivisions)
@@ -341,6 +340,8 @@ UsdGrassImagingGrassAdapter::GetTopology(const UsdPrim& usdPrim,
         {
             faceVertexIndices.push_back(top_base_idx + idx + 1);
         }
+
+        faceVertexIndices.push_back(top_base_idx + idx);
     }
 
     static HdMeshTopology planeTopology(UsdGeomTokens->catmullClark,

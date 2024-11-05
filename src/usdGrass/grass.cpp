@@ -345,8 +345,8 @@ double UsdGrassGrass::calculateMaxHeight(const double radius, const double heigh
     // Calculate radius of circle drawn at the curve's max height
     // and add that to the curve's height to get max_height of prim
     double minRadius = calculateMinRadius(radius, thinning);
-    double maxHeight = height + minRadius + 0.5 - 
-                        heightPos * 0.5 * thinning * radius;
+    double maxHeight = height + minRadius +
+                       (0.5 - heightPos * 0.5) * thinning * radius;
 
     return maxHeight;
 }
