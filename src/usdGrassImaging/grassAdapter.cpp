@@ -173,15 +173,6 @@ VtVec3fArray UsdGrassImagingGrassAdapter::GetPointsFromCoeffs(
         }
 
         double currRadius = minRadius + (1 - ratio) * (radius - minRadius);
-
-        GfVec3f pointOnCurve{x, y, 0.0f};
-        
-        GfVec3f tangent{1.0f, derivative, 0.0f};
-        
-        GfVec3f intersectionPoint{x * (derivative + 1), 0.0f, 0.0f};
-
-        double distToBase = GfVec3f(intersectionPoint - pointOnCurve).GetLength();
-
         double planeAngle = -(M_PI/2 - std::atan(derivative));
 
         if (ii == 0)
