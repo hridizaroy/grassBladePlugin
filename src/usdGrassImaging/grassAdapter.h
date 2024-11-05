@@ -6,6 +6,7 @@
 #pragma once
 
 #include <pxr/usdImaging/usdImaging/gprimAdapter.h>
+#include <pxr/base/gf/vec3f.h>
 
 PXR_NAMESPACE_OPEN_SCOPE
 
@@ -64,7 +65,19 @@ public:
                                 UsdTimeCode time) const override;
 
 private:
-    const int BASE_NUM_DIV = 60;
+    // Number of sections to divide a circular base of radius 1.0 into
+    const int BASE_NUM_DIV = 100;
+
+    // Number of circular planes to use for a curve of length 1.0
+    const int NUM_CIRC_PLANES = 100;
+
+    GfVec3f GetRotatedPointsAboutZ(GfVec3f& point, double angle) const;
+
+    VtVec3fArray GetPointsFromCoeffs(const std::vector<double>& coeffs,
+                                     const double radius,
+                                     const double thinning,
+                                     const double x_max,
+                                     const double x_min = 0.0f) const;
 };
 
 PXR_NAMESPACE_CLOSE_SCOPE

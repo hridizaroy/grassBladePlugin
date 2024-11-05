@@ -13,16 +13,18 @@ UsdGrassTokensType::UsdGrassTokensType() :
     extent("extent", TfToken::Immortal),
     height("height", TfToken::Immortal),
     heightPos("heightPos", TfToken::Immortal),
+    horizontalStretch("horizontalStretch", TfToken::Immortal),
     radius("radius", TfToken::Immortal),
-    width("width", TfToken::Immortal),
+    thinning("thinning", TfToken::Immortal),
     Grass("Grass", TfToken::Immortal),
     allTokens({
         color,
         extent,
         height,
         heightPos,
+        horizontalStretch,
         radius,
-        width,
+        thinning,
         Grass
     })
 {

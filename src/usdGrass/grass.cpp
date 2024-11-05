@@ -121,23 +121,6 @@ UsdGrassGrass::CreateHeightAttr(VtValue const &defaultValue, bool writeSparsely)
 }
 
 UsdAttribute
-UsdGrassGrass::GetWidthAttr() const
-{
-    return GetPrim().GetAttribute(UsdGrassTokens->width);
-}
-
-UsdAttribute
-UsdGrassGrass::CreateWidthAttr(VtValue const &defaultValue, bool writeSparsely) const
-{
-    return UsdSchemaBase::_CreateAttr(UsdGrassTokens->width,
-                       SdfValueTypeNames->Double,
-                       /* custom = */ false,
-                       SdfVariabilityVarying,
-                       defaultValue,
-                       writeSparsely);
-}
-
-UsdAttribute
 UsdGrassGrass::GetHeightPosAttr() const
 {
     return GetPrim().GetAttribute(UsdGrassTokens->heightPos);
@@ -147,6 +130,40 @@ UsdAttribute
 UsdGrassGrass::CreateHeightPosAttr(VtValue const &defaultValue, bool writeSparsely) const
 {
     return UsdSchemaBase::_CreateAttr(UsdGrassTokens->heightPos,
+                       SdfValueTypeNames->Double,
+                       /* custom = */ false,
+                       SdfVariabilityVarying,
+                       defaultValue,
+                       writeSparsely);
+}
+
+UsdAttribute
+UsdGrassGrass::GetHorizontalStretchAttr() const
+{
+    return GetPrim().GetAttribute(UsdGrassTokens->horizontalStretch);
+}
+
+UsdAttribute
+UsdGrassGrass::CreateHorizontalStretchAttr(VtValue const &defaultValue, bool writeSparsely) const
+{
+    return UsdSchemaBase::_CreateAttr(UsdGrassTokens->horizontalStretch,
+                       SdfValueTypeNames->Double,
+                       /* custom = */ false,
+                       SdfVariabilityVarying,
+                       defaultValue,
+                       writeSparsely);
+}
+
+UsdAttribute
+UsdGrassGrass::GetThinningAttr() const
+{
+    return GetPrim().GetAttribute(UsdGrassTokens->thinning);
+}
+
+UsdAttribute
+UsdGrassGrass::CreateThinningAttr(VtValue const &defaultValue, bool writeSparsely) const
+{
+    return UsdSchemaBase::_CreateAttr(UsdGrassTokens->thinning,
                        SdfValueTypeNames->Double,
                        /* custom = */ false,
                        SdfVariabilityVarying,
@@ -207,8 +224,9 @@ UsdGrassGrass::GetSchemaAttributeNames(bool includeInherited)
     static TfTokenVector localNames = {
         UsdGrassTokens->radius,
         UsdGrassTokens->height,
-        UsdGrassTokens->width,
         UsdGrassTokens->heightPos,
+        UsdGrassTokens->horizontalStretch,
+        UsdGrassTokens->thinning,
         UsdGrassTokens->color,
         UsdGrassTokens->extent,
     };
@@ -241,29 +259,38 @@ PXR_NAMESPACE_CLOSE_SCOPE
 PXR_NAMESPACE_OPEN_SCOPE
 
 bool
-UsdGrassGrass::ComputeExtent(double radius, double height, double width,
-                                VtVec3fArray* extent)
+UsdGrassGrass::ComputeExtent(double radius, double height,
+                             double heightPos, double horizontalStretch,
+                             double thinning,
+                             VtVec3fArray* extent)
 {
     extent->resize(2);
 
     (*extent)[0] = GfVec3f(-radius, 0.0, -radius);
 
-    // Placeholder
-    (*extent)[1] = GfVec3f(radius + width, height, radius);
+    double maxHeight = calculateMaxHeight(radius, height, heightPos, thinning);
+    double minRadius = calculateMinRadius(radius, thinning);
+
+    (*extent)[1] = GfVec3f(horizontalStretch + minRadius, maxHeight, radius);
 
     return true;
 }
 
 bool
-UsdGrassGrass::ComputeExtent(double radius, double height, double width,
-                              const GfMatrix4d& transform,
-                              VtVec3fArray* extent)
+UsdGrassGrass::ComputeExtent(double radius, double height,
+                             double heightPos, double horizontalStretch,
+                             double thinning,
+                             const GfMatrix4d& transform,
+                             VtVec3fArray* extent)
 {
     extent->resize(2);
 
+    double maxHeight = calculateMaxHeight(radius, height, heightPos, thinning);
+    double minRadius = calculateMinRadius(radius, thinning);
+
     GfBBox3d bbox = GfBBox3d(
         GfRange3d(GfVec3f(-radius, 0.0, -radius),
-                  GfVec3d(radius + width, height, radius)),
+                  GfVec3f(horizontalStretch + minRadius, maxHeight, radius)),
         transform);
     
     GfRange3d range = bbox.ComputeAlignedRange();
@@ -285,22 +312,49 @@ _ComputeExtentForGrassBlade(const UsdGeomBoundable& boundable,
         return false;
     }
 
-    double height;
-    double width;
     double radius;
-    if (!grassBlade.GetRadiusAttr().Get(&radius, time) ||
-        !grassBlade.GetHeightAttr().Get(&height, time) || 
-        !grassBlade.GetWidthAttr().Get(&width, time))
+    double height;
+    double heightPos;
+    double horizontalStretch;
+    double thinning;
+    if (!grassBlade.GetRadiusAttr().Get(&radius, time)||
+        !grassBlade.GetHeightAttr().Get(&height, time) ||
+        !grassBlade.GetHeightPosAttr().Get(&heightPos, time) ||
+        !grassBlade.GetHorizontalStretchAttr().Get(&horizontalStretch, time)||
+        !grassBlade.GetThinningAttr().Get(&thinning, time) )
     {
         return false;
     }
 
     if (transform)
     {
-        return UsdGrassGrass::ComputeExtent(radius, height, width, *transform, extent);
+        return UsdGrassGrass::ComputeExtent(radius, height, heightPos,
+                                            horizontalStretch, thinning,
+                                            *transform, extent);
     } else {
-        return UsdGrassGrass::ComputeExtent(radius, height, width, extent);
+        return UsdGrassGrass::ComputeExtent(radius, height, heightPos,
+                                            horizontalStretch, thinning, 
+                                            extent);
     }
+}
+
+double UsdGrassGrass::calculateMaxHeight(const double radius, const double height,
+                                         const double heightPos,
+                                         const double thinning)
+{
+    // Calculate radius of circle drawn at the curve's max height
+    // and add that to the curve's height to get max_height of prim
+    double minRadius = calculateMinRadius(radius, thinning);
+    double maxHeight = height + minRadius + 0.5 - 
+                        heightPos * 0.5 * thinning * radius;
+
+    return maxHeight;
+}
+
+double UsdGrassGrass::calculateMinRadius(const double radius,
+                                        const double thinning)
+{
+    return (1 - thinning) * radius;
 }
 
 TF_REGISTRY_FUNCTION(UsdGeomBoundable)

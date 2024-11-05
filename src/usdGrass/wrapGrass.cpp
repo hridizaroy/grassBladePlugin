@@ -47,16 +47,23 @@ _CreateHeightAttr(UsdGrassGrass &self,
 }
         
 static UsdAttribute
-_CreateWidthAttr(UsdGrassGrass &self,
+_CreateHeightPosAttr(UsdGrassGrass &self,
                                       object defaultVal, bool writeSparsely) {
-    return self.CreateWidthAttr(
+    return self.CreateHeightPosAttr(
         UsdPythonToSdfType(defaultVal, SdfValueTypeNames->Double), writeSparsely);
 }
         
 static UsdAttribute
-_CreateHeightPosAttr(UsdGrassGrass &self,
+_CreateHorizontalStretchAttr(UsdGrassGrass &self,
                                       object defaultVal, bool writeSparsely) {
-    return self.CreateHeightPosAttr(
+    return self.CreateHorizontalStretchAttr(
+        UsdPythonToSdfType(defaultVal, SdfValueTypeNames->Double), writeSparsely);
+}
+        
+static UsdAttribute
+_CreateThinningAttr(UsdGrassGrass &self,
+                                      object defaultVal, bool writeSparsely) {
+    return self.CreateThinningAttr(
         UsdPythonToSdfType(defaultVal, SdfValueTypeNames->Double), writeSparsely);
 }
         
@@ -130,17 +137,24 @@ void wrapUsdGrassGrass()
              (arg("defaultValue")=object(),
               arg("writeSparsely")=false))
         
-        .def("GetWidthAttr",
-             &This::GetWidthAttr)
-        .def("CreateWidthAttr",
-             &_CreateWidthAttr,
-             (arg("defaultValue")=object(),
-              arg("writeSparsely")=false))
-        
         .def("GetHeightPosAttr",
              &This::GetHeightPosAttr)
         .def("CreateHeightPosAttr",
              &_CreateHeightPosAttr,
+             (arg("defaultValue")=object(),
+              arg("writeSparsely")=false))
+        
+        .def("GetHorizontalStretchAttr",
+             &This::GetHorizontalStretchAttr)
+        .def("CreateHorizontalStretchAttr",
+             &_CreateHorizontalStretchAttr,
+             (arg("defaultValue")=object(),
+              arg("writeSparsely")=false))
+        
+        .def("GetThinningAttr",
+             &This::GetThinningAttr)
+        .def("CreateThinningAttr",
+             &_CreateThinningAttr,
              (arg("defaultValue")=object(),
               arg("writeSparsely")=false))
         

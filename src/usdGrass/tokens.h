@@ -61,14 +61,18 @@ struct UsdGrassTokensType {
     /// 
     /// UsdGrassGrass
     const TfToken heightPos;
+    /// \brief "horizontalStretch"
+    /// 
+    /// UsdGrassGrass
+    const TfToken horizontalStretch;
     /// \brief "radius"
     /// 
     /// UsdGrassGrass
     const TfToken radius;
-    /// \brief "width"
+    /// \brief "thinning"
     /// 
     /// UsdGrassGrass
-    const TfToken width;
+    const TfToken thinning;
     /// \brief "Grass"
     /// 
     /// Schema identifer and family for UsdGrassGrass

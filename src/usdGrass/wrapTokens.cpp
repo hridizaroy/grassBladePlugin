@@ -51,7 +51,8 @@ void wrapUsdGrassTokens()
     _AddToken(cls, "extent", UsdGrassTokens->extent);
     _AddToken(cls, "height", UsdGrassTokens->height);
     _AddToken(cls, "heightPos", UsdGrassTokens->heightPos);
+    _AddToken(cls, "horizontalStretch", UsdGrassTokens->horizontalStretch);
     _AddToken(cls, "radius", UsdGrassTokens->radius);
-    _AddToken(cls, "width", UsdGrassTokens->width);
+    _AddToken(cls, "thinning", UsdGrassTokens->thinning);
     _AddToken(cls, "Grass", UsdGrassTokens->Grass);
 }

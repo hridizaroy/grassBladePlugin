@@ -26,16 +26,12 @@ class Grass "Grass" (
         }
     }
 )  {
-    double radius = 0.2 (
+    double radius = 0.4 (
         doc = """Radius of the bottom of the grass blade."""
     )
 
     double height = 1.0 (
         doc = """Height of the grass blade."""
-    )
-    
-    double width = 0.5 (
-        doc = """Width of the grass blade (Past the diameter)."""
     )
 
     double heightPos = 0.5 (
@@ -45,13 +41,21 @@ class Grass "Grass" (
                 1.0 = At the width."""
     )
 
+    double horizontalStretch = 0.5 (
+        doc = """Horizontal stretch of the grass blade."""
+    )
+
+    double thinning = 0.9 (
+        doc = """Proportion of max radius to min radius."""
+    )
+
     color3f color = (0.1, 0.7, 0.1) (
-        displayName = "Color"
         doc = """Color of the grass blade."""
     )
 
-    float3[] extent = [(-0.2, 0.0, -0.2), (0.7, 1.0, 0.2)] (
+    float3[] extent = [(-0.4, 0.0, -0.4), (0.54, 1.45, 0.4)] (
         doc = """Fallback extent value of a grass blade with
-                height = 1, width = 0.5, and radius = 0.2."""
+                radius = 0.4, height = 1, heightPos = 0.5,
+                horizontalStretch = 0.5, and thinning = 0.9."""
     )
 }

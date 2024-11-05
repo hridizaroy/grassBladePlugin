@@ -139,7 +139,7 @@ public:
     ///
     /// | ||
     /// | -- | -- |
-    /// | Declaration | `double radius = 0.5` |
+    /// | Declaration | `double radius = 0.4` |
     /// | C++ Type | double |
     /// | \ref Usd_Datatypes "Usd Type" | SdfValueTypeNames->Double |
     USDGRASS_API
@@ -177,34 +177,12 @@ public:
 
 public:
     // --------------------------------------------------------------------- //
-    // WIDTH 
-    // --------------------------------------------------------------------- //
-    /// Total width of the grass blade
-    ///
-    /// | ||
-    /// | -- | -- |
-    /// | Declaration | `double width = 0.5` |
-    /// | C++ Type | double |
-    /// | \ref Usd_Datatypes "Usd Type" | SdfValueTypeNames->Double |
-    USDGRASS_API
-    UsdAttribute GetWidthAttr() const;
-
-    /// See GetWidthAttr(), and also 
-    /// \ref Usd_Create_Or_Get_Property for when to use Get vs Create.
-    /// If specified, author \p defaultValue as the attribute's default,
-    /// sparsely (when it makes sense to do so) if \p writeSparsely is \c true -
-    /// the default for \p writeSparsely is \c false.
-    USDGRASS_API
-    UsdAttribute CreateWidthAttr(VtValue const &defaultValue = VtValue(), bool writeSparsely=false) const;
-
-public:
-    // --------------------------------------------------------------------- //
     // HEIGHTPOS 
     // --------------------------------------------------------------------- //
     /// x position where grass blade reaches its max height.
     /// Goes from 0.0 to 1.0.
     /// 0.0 = Halfway through the width.
-    /// 1.0 = At the width
+    /// 1.0 = At the width.
     ///
     /// | ||
     /// | -- | -- |
@@ -221,6 +199,50 @@ public:
     /// the default for \p writeSparsely is \c false.
     USDGRASS_API
     UsdAttribute CreateHeightPosAttr(VtValue const &defaultValue = VtValue(), bool writeSparsely=false) const;
+
+public:
+    // --------------------------------------------------------------------- //
+    // HORIZONTALSTRETCH 
+    // --------------------------------------------------------------------- //
+    /// Horizontal stretch of the grass blade.
+    ///
+    /// | ||
+    /// | -- | -- |
+    /// | Declaration | `double horizontalStretch = 0.5` |
+    /// | C++ Type | double |
+    /// | \ref Usd_Datatypes "Usd Type" | SdfValueTypeNames->Double |
+    USDGRASS_API
+    UsdAttribute GetHorizontalStretchAttr() const;
+
+    /// See GetHorizontalStretchAttr(), and also 
+    /// \ref Usd_Create_Or_Get_Property for when to use Get vs Create.
+    /// If specified, author \p defaultValue as the attribute's default,
+    /// sparsely (when it makes sense to do so) if \p writeSparsely is \c true -
+    /// the default for \p writeSparsely is \c false.
+    USDGRASS_API
+    UsdAttribute CreateHorizontalStretchAttr(VtValue const &defaultValue = VtValue(), bool writeSparsely=false) const;
+
+public:
+    // --------------------------------------------------------------------- //
+    // THINNING 
+    // --------------------------------------------------------------------- //
+    /// Proportion of max radius to min radius.
+    ///
+    /// | ||
+    /// | -- | -- |
+    /// | Declaration | `double thinning = 0.9` |
+    /// | C++ Type | double |
+    /// | \ref Usd_Datatypes "Usd Type" | SdfValueTypeNames->Double |
+    USDGRASS_API
+    UsdAttribute GetThinningAttr() const;
+
+    /// See GetThinningAttr(), and also 
+    /// \ref Usd_Create_Or_Get_Property for when to use Get vs Create.
+    /// If specified, author \p defaultValue as the attribute's default,
+    /// sparsely (when it makes sense to do so) if \p writeSparsely is \c true -
+    /// the default for \p writeSparsely is \c false.
+    USDGRASS_API
+    UsdAttribute CreateThinningAttr(VtValue const &defaultValue = VtValue(), bool writeSparsely=false) const;
 
 public:
     // --------------------------------------------------------------------- //
@@ -248,11 +270,13 @@ public:
     // --------------------------------------------------------------------- //
     // EXTENT 
     // --------------------------------------------------------------------- //
-    /// Fallback extent value of a grass blade with length=1 and radius=0.5
+    /// Fallback extent value of a grass blade with
+    /// radius = 0.4, height = 1, heightPos = 0.5,
+    /// horizontalStretch = 0.5, and thinning = 0.9.
     ///
     /// | ||
     /// | -- | -- |
-    /// | Declaration | `float3[] extent = [(-0.5, 0, -0.5), (0.5, 1, 0.5)]` |
+    /// | Declaration | `float3[] extent = [(-0.4, 0, -0.4), (0.54, 1.45, 0.4)]` |
     /// | C++ Type | VtArray<GfVec3f> |
     /// | \ref Usd_Datatypes "Usd Type" | SdfValueTypeNames->Float3Array |
     USDGRASS_API
@@ -284,14 +308,26 @@ public:
     /// \retval false Failure to compute extent.
     USDGEOM_API
     static bool ComputeExtent(double radius, double height,
-                        double width, VtVec3fArray* extent);
+                              double heightPos, double horizontalStretch,
+                              double thinning,
+                              VtVec3fArray* extent);
 
     /// \overload
     /// Computes the extent as if the matrix \p transform was first applied.
     USDGEOM_API
-    static bool ComputeExtent(double radius, double height, double width,
+    static bool ComputeExtent(double radius, double height,
+                              double heightPos,  double horizontalStretch,
+                              double thinning,
                               const GfMatrix4d& transform,
                               VtVec3fArray* extent);
+
+private:
+    static double calculateMaxHeight(const double radius, const double height,
+                                     const double heightPos,
+                                     const double thinning);
+
+    static double inline calculateMinRadius(const double radius,
+                                            const double thinning);
 };
 
 PXR_NAMESPACE_CLOSE_SCOPE

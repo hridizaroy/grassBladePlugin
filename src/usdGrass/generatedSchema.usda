@@ -8,7 +8,6 @@ class Grass "Grass" (
 )
 {
     color3f color = (0.1, 0.7, 0.1) (
-        displayName = "Color"
         doc = "Color of the grass blade."
     )
     uniform bool doubleSided = 0 (
@@ -30,8 +29,10 @@ class Grass "Grass" (
         forward-facing normals on each side of the surface for lighting
         calculations."""
     )
-    float3[] extent = [(-0.5, 0, -0.5), (0.5, 1, 0.5)] (
-        doc = "Fallback extent value of a grass blade with length=1 and radius=0.5"
+    float3[] extent = [(-0.4, 0, -0.4), (0.54, 1.45, 0.4)] (
+        doc = """Fallback extent value of a grass blade with
+                radius = 0.4, height = 1, heightPos = 0.5,
+                horizontalStretch = 0.5, and thinning = 0.9."""
     )
     double height = 1 (
         doc = "Height of the grass blade."
@@ -40,7 +41,10 @@ class Grass "Grass" (
         doc = """x position where grass blade reaches its max height.
                 Goes from 0.0 to 1.0.
                 0.0 = Halfway through the width.
-                1.0 = At the width"""
+                1.0 = At the width."""
+    )
+    double horizontalStretch = 0.5 (
+        doc = "Horizontal stretch of the grass blade."
     )
     uniform token orientation = "rightHanded" (
         allowedTokens = ["rightHanded", "leftHanded"]
@@ -94,8 +98,11 @@ class Grass "Grass" (
         See for more detail about how 
         purpose is computed and used."""
     )
-    double radius = 0.5 (
+    double radius = 0.4 (
         doc = "Radius of the bottom of the grass blade."
+    )
+    double thinning = 0.9 (
+        doc = "Proportion of max radius to min radius."
     )
     token visibility = "inherited" (
         allowedTokens = ["inherited", "invisible"]
@@ -105,9 +112,6 @@ class Grass "Grass" (
         segment of a shot, and absent from others; unlike the action of 
         deactivating geometry prims, invisible geometry is still 
         available for inspection, for positioning, for defining volumes, etc.'''
-    )
-    double width = 0.5 (
-        doc = "Total width of the grass blade"
     )
     uniform token[] xformOpOrder (
         doc = """Encodes the sequence of transformation operations in the

@@ -7,15 +7,11 @@ usd_library(usdGrass
         ${ORGANIZATION}
 
     LIBRARIES
-        js
-        plug
         tf
         sdf
         vt
-        gf
         usd
         usdGeom
-        arch
 
     PUBLIC_CLASSES
         grass
