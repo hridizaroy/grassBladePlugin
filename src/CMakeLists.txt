@@ -1,21 +1,11 @@
 # A top-level name used as the root directory for public headers
 # installation, and the root python module.
-# This is optional.  See ./usdGrass/CMakeLists.txt for how it's used.
 set(ORGANIZATION "grassbladeplugin")
 
 # Build & install libraries.
 add_subdirectory(usdGrass)
 add_subdirectory(usdviewGrass)
-
-# Build & install plugins.
-if (BUILD_HYDRA2)
-    add_subdirectory(usdGrassImagingHd2)
-else()
-    add_subdirectory(usdGrassImaging)
-endif()
-
-# add_subdirectory(usdGrassFileFormat)
-# add_subdirectory(hdGrass)
+add_subdirectory(usdGrassImaging)
 
 # Install top-level plugInfo for including per-library plugInfo(s).
 install(

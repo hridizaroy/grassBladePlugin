@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.13)
 project(
     grassBladePlugin
     VERSION 0.0.0
-    DESCRIPTION "A test plugin for creating a custom USD Prim and imaging adapter."
+    DESCRIPTION "A plugin for creating a custom USD Grass Blade Prim and imaging adapter."
     LANGUAGES CXX
 )
 

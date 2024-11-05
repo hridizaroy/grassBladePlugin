@@ -147,34 +147,43 @@ VtVec3fArray UsdGrassImagingGrassAdapter::GetPointsFromCoeffs(
                                             const double x_max,
                                             const double x_min) const
 {
-    // TODO: Value validation - coeffs must not be empty
-    // TODO: Clamp minRadius value
+    // Radius for the tip of the curve
     float minRadius = (1 - thinning) * radius;
 
+    // Number of sectors for each circular plane
     int numDivs = BASE_NUM_DIV * radius;
+
     int numCoeffs = coeffs.size();
 
     double correctionAngle = 0;
 
     VtVec3fArray points;
 
+    // Generate vertices for all circular planes
     for (int ii = 0; ii <= NUM_CIRC_PLANES; ii++)
     {
         double ratio = ii / (double)NUM_CIRC_PLANES;
 
-        double x = ratio * x_max;
+        double x = x_min + ratio * x_max;
         double y = coeffs[0];
         double derivative = 0;
 
+        // Calculate f(x) and derivative
         for (int idx = 1; idx < numCoeffs; idx++)
         {
             y += coeffs[idx] * std::pow(x, idx);
             derivative += idx * coeffs[idx] * std::pow(x, idx - 1);
         }
 
+        // Radius of current circular plane
         double currRadius = minRadius + (1 - ratio) * (radius - minRadius);
+
+        // Angle to rotate current plane by, in order to make it point towards
+        // the curve tangent
         double planeAngle = -(M_PI/2 - std::atan(derivative));
 
+        // Angle to rotate the whole curve by in order to have the base normal
+        // be parallel to the Y axis
         if (ii == 0)
         {
             correctionAngle = -planeAngle;
@@ -196,7 +205,8 @@ VtVec3fArray UsdGrassImagingGrassAdapter::GetPointsFromCoeffs(
 
             GfVec3f point = GfVec3f(xPos, 0.0f, zPos);
 
-            GfVec3f rotationVector = GetRotatedPointsAboutZ(point, planeAngle + correctionAngle);
+            GfVec3f rotationVector = 
+                    GetRotatedPointsAboutZ(point, planeAngle + correctionAngle);
 
             GfVec3f finalPoint = center + rotationVector;
 
@@ -259,12 +269,13 @@ UsdGrassImagingGrassAdapter::GetTopology(const UsdPrim& usdPrim,
     TF_VERIFY(grass.GetHorizontalStretchAttr().Get(&horizontalStretch, time));    
     TF_VERIFY(grass.GetThinningAttr().Get(&thinning, time));
 
+    // number of sectors for each circular plane
     int numDivisions = this->BASE_NUM_DIV * radius;
 
-    // Circular base
     VtIntArray faceVertexCounts;
     VtIntArray faceVertexIndices;
 
+    // Counts
     // base
     for (int ii = 0; ii < numDivisions; ii++)
     {
@@ -283,6 +294,7 @@ UsdGrassImagingGrassAdapter::GetTopology(const UsdPrim& usdPrim,
         faceVertexCounts.push_back(3);
     }
 
+    // Connecting vertices
     // Base
     for (int idx = 1; idx <= numDivisions; idx++)
     {
@@ -331,7 +343,7 @@ UsdGrassImagingGrassAdapter::GetTopology(const UsdPrim& usdPrim,
     {
         faceVertexIndices.push_back(top_base_idx);
         
-        // last face
+        // last sector
         if (idx == numDivisions)
         {
             faceVertexIndices.push_back(top_base_idx + 1);

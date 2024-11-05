@@ -1,8 +1,3 @@
-//
-// Copyright © 2024 Weta Digital Limited
-//
-// SPDX-License-Identifier: Apache-2.0
-//
 #pragma once
 
 #include <pxr/usdImaging/usdImaging/gprimAdapter.h>
@@ -10,9 +5,9 @@
 
 PXR_NAMESPACE_OPEN_SCOPE
 
-/// \class UsdTriImagingTriangleAdapter
+/// \class UsdGrassImagingGrassAdapter
 ///
-/// PrimAdapter plugin for the "Triangle" prim type.
+/// PrimAdapter plugin for the "Grass" prim type.
 class UsdGrassImagingGrassAdapter : public UsdImagingGprimAdapter
 {
 public:
@@ -54,12 +49,12 @@ public:
     // ---------------------------------------------------------------------- //
 
     /// Override the implementation in GprimAdapter and provide \em custom
-    /// points for a triangle.
+    /// points for a grass blade.
     virtual VtValue GetPoints(const UsdPrim& usdPrim,
                               UsdTimeCode timeCode) const override;
 
     /// Override the implementation in GprimAdapter and provide \em custom
-    /// topology for a triangle.
+    /// topology for a grass blade.
     virtual VtValue GetTopology(const UsdPrim& usdPrim,
                                 const SdfPath& cachePath,
                                 UsdTimeCode time) const override;
@@ -71,8 +66,13 @@ private:
     // Number of circular planes to use for a curve of length 1.0
     const int NUM_CIRC_PLANES = 300;
 
+    /// Helper function for rotating the given point counterclockwise about
+    /// the Z axis, by the given angle
     GfVec3f GetRotatedPointsAboutZ(GfVec3f& point, double angle) const;
 
+    /// \p coeffs - vector of coefficients for the curve, in order, starting
+    /// with the coefficient for x^0
+    /// \return Array of all vertices for the given curve from x_min to x_max
     VtVec3fArray GetPointsFromCoeffs(const std::vector<double>& coeffs,
                                      const double radius,
                                      const double thinning,

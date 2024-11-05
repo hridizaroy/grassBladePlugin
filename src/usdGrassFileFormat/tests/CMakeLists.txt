@@ -1,1 +1,0 @@
-usd_python_test(usdTriFileFormat_python testFileFormat.py)
